@@ -16,7 +16,7 @@
 
 #Enter the file name of the python file you want to convert below
 #You should use its full file path
-pythonFile = "adventure.py"
+pythonFile = "droids.py"
 
 
 
@@ -188,10 +188,12 @@ def wordReplacer(svgfile, linesToAvoid, clues, charCheck = True, removeEndChar =
                     workingOn = tabs + "SEND" + var
                 svgfile[count] = workingOn
 
-
+            #bodgy multiline fix
             pattern = re.compile('.*"\)$')
             multiLineP =  pattern.match(workingOn)
-            if (multiLineP ):
+            pattern2 = re.compile('.*\'\)\s*$')
+            multiLineP2 =  pattern2.match(workingOn)
+            if (multiLineP or multiLineP2):
                 #print (workingOn)
                 workingOn = workingOn + " TO SCREEN"
                 svgfile[count] = workingOn
@@ -204,14 +206,20 @@ def wordReplacer(svgfile, linesToAvoid, clues, charCheck = True, removeEndChar =
                     debug(svgfile[count][found-1])
                     debug(svgfile[count][found+len(clues[i][0])])
                     #bodge fix for SET
-                    if (" = " in workingOn and "SET" not in workingOn and "IF" not in workingOn):
-                        fixSet = workingOn.split(" ")
-                        #print(fixSet)
-                        varIndex = next(i for (i, x) in enumerate(fixSet) if x)
+                    if (" = " in workingOn and "SET" not in workingOn and "if" not in workingOn):
                         
-                        fixSet[varIndex] = "SET " + fixSet[varIndex]
-                        workingOn = " ".join(fixSet)
+                        fixSet = workingOn.split(" ")
+                        
+                        tabs = 1 + (len(fixSet[0]) - len(fixSet[0].lstrip()))
+                        tabstring=""
+                        for i in range(1,int(tabs)):
+                            tabstring = tabstring + "\t"
+                        fixSet[0] = tabstring + "SET " + fixSet[0].lstrip()
+                        
+                        workingOn =  " ".join(fixSet)
+                        
                         svgfile[count] = workingOn
+                        
                     #very bodgy input fix
                     if ("input" in workingOn):
                         #bodge fix for int --> INTEGER
@@ -361,7 +369,7 @@ def indentationFinder(svgfile, linesToAvoid):
             
             printLinePattern = re.compile('^\".*\"$')
             printLines =  printLinePattern.match(svgfile[count])
-            if (not (found == -1)) and not (count in linesToAvoid) and ("print" not in svgfile[count].lower()) and ("send" not in svgfile[count].lower() and printLines==False):
+            if (not (found == -1)) and not (count in linesToAvoid)and ("set" not in svgfile[count].lower()) and ("print" not in svgfile[count].lower()) and ("send" not in svgfile[count].lower() and printLines==False):
                 #print("found an indent on line " + str(count))
                 #print(svgfile[count])
                 #print("found is " + str(found))
@@ -489,7 +497,7 @@ def main(filename):
     linesToAvoid = multiLineCommentTracker(svgfile)             #Adds lines to be ignored by the replacers, mainly just multiline comments
     print("Searching through file, this may take a while")
 
-    clues = [["elif", "~~~"],]
+    clues = [["elif", "~~~~~~"],]
 
     for i in range(0, 6):
         svgfile = wordReplacer(svgfile, linesToAvoid, clues)    #Replaces every use of elif with ~~~~ to avoid confusing the indentation finder laster
@@ -508,7 +516,7 @@ def main(filename):
     for x in range(0, 5):
         svgfile = wordReplacer(svgfile, linesToAvoid, [["self.", " "],], False)
     for x in range(0, 10):
-        svgfile = wordReplacer(svgfile, linesToAvoid, [["=", "TO"], ["~~~", "ELSEIF"]])
+        svgfile = wordReplacer(svgfile, linesToAvoid, [["=", "TO"], ["~~~~~~", "ELSEIF"]])
     for x in range(0, 10):
         svgfile = wordReplacer(svgfile, linesToAvoid, [["|", "="],])
 
