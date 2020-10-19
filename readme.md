@@ -7,9 +7,9 @@
       `"")---(""` |___.|
      /:::::::::::\" _  "
     /:::=======:::\`\`\
-   `"""""""""""""`  '-'
+    `"""""""""""""`  '-'
    
-   Python 3 to Pearson PseudoCode converter.
+   Python 3 to Pearson PseudoCode converter.\n
    run Pseudo3.py to convert the Python code.
    Python program to convert is hardcoded in first line of code:
    pythonFile = "adventure.py"
