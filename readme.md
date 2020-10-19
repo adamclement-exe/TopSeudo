@@ -18,7 +18,10 @@
    pythonFile = "adventure.py"
    
    
+   
  Based on 
-   #Python-to-AQA-psudocode converter
-   #By Andrew Mulholland aka gbaman
- Lots of bodgey fixes applied by Adam Clement.
+ 
+   #Python-to-AQA-psudocode converter By Andrew Mulholland aka gbaman
+   
+ Lots of bodgey fixes applied by Adam Clement to work to Pearson Spec.
+ 
